@@ -1,3 +1,11 @@
 from django.contrib import admin
+from .models import (
+	diary,
+	bpdata,
+	bpinputs,
+)
 
-# Register your models here.
+
+admin.site.register(diary)
+admin.site.register(bpdata)
+admin.site.register(bpinputs)

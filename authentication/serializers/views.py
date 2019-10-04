@@ -25,7 +25,8 @@ from authentication.models import (
 from .serializers import (
     CreateUserSerializer,
     ClientCreateSerializer,
-	CreateLocationSerializer
+	CreateLocationSerializer,
+	GetUserDetailsSerializer
 )
 
 USER=get_user_model()
@@ -60,6 +61,8 @@ class RegisterClientAPIView(ObtainJSONWebToken):
         user_class_serializer = CreateUserSerializer(data=user_class_data)
         if user_class_serializer.is_valid():
             user_object = user_class_serializer.create(user_class_serializer.validated_data)
+            user_object.is_app_client = True;
+            user_object.save()
 
             location_serializer = CreateLocationSerializer(data=client_location)
             if location_serializer.is_valid():
@@ -79,9 +82,10 @@ class RegisterClientAPIView(ObtainJSONWebToken):
 	                login_serializer = ObtainJSONWebToken.get_serializer(self,data=user_login_cred)
 	                if login_serializer.is_valid():
 	                    user = login_serializer.object.get('user')
+	                    user_serializer = GetUserDetailsSerializer(user).data
 	                    token = login_serializer.object.get('token')
 
-	                    response_data = jwt_response_payload_handler(token, user, request)
+	                    response_data = [user_serializer,jwt_response_payload_handler(token, user, request)]
 	                    response = Response(response_data)
 	                    return response
 	                return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -96,8 +100,9 @@ class LoginClientAPIView(ObtainJSONWebToken):
 
 		if serializer.is_valid():
 			user = serializer.object.get('user') or request.user
+			user_serializer = GetUserDetailsSerializer(user).data
 			token = serializer.object.get('token')
-			response_data = jwt_response_payload_handler(token,user,request)
+			response_data = [user_serializer,jwt_response_payload_handler(token, user, request)]
 			response = Response(response_data)
 			print(api_settings.JWT_AUTH_COOKIE)
 			return response

@@ -90,3 +90,13 @@ class ClientCreateSerializer(ModelSerializer):
 		app_client_obj.save()
 
 		return app_client_obj
+
+class GetUserDetailsSerializer(ModelSerializer):
+	class Meta:
+		model=USER
+		fields=[
+			'id',
+			'first_name',
+			'last_name',
+			'email',
+		]

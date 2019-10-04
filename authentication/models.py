@@ -44,6 +44,9 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
+    is_app_client = models.BooleanField(null=True, blank=True)
+    is_app_staff = models.BooleanField(null=True, blank=True)
+    is_app_superuser = models.BooleanField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

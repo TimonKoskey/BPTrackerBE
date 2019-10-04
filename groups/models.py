@@ -1,3 +1,8 @@
 from django.db import models
+from authentication.models import clients
 
-# Create your models here.
+class GroupData(models.Model):
+	pass
+
+class GroupMembers(models.Model):
+	pass 
